@@ -218,11 +218,11 @@
                     class: 'col-lg-4 col-md-12'
                 });
                 room.appendTo('#rooms');
-                var videoUrl = "http://f00b526f.ngrok.io/video.mjpg";
+                var videoUrl = v.status.videoUrl;
                 var video = $('<img src=' + videoUrl + '>', {html: 'video' + k});
                 video.appendTo('#room' + k);
 
-                $.each(v, function (k2, v2) {
+                $.each(v.status, function (k2, v2) {
                     var room = $('<div></div>', {
                         html:
                         '<label>' + k2 + ':</label> ' + v2
