@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png"/>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+    <title>Material Dashboard by Creative Tim</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- Bootstrap core CSS     -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!--  Material Dashboard CSS    -->
+    <link href="assets/css/material-dashboard.css" rel="stylesheet"/>
+
+    <!--     Fonts and icons     -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet'
+          type='text/css'>
+
+    <!--      Angular     -->
+    <script src="assets/js/angular.min.js"></script>
+</head>
+
+<body data-ng-app="myApp" ng-controller="DashboardCtrl">
+
+<div class="wrapper">
+
+    <div ng-include="'sidebar.html'" onload="finishLoadingSidebar()"></div>
+
+    <div class="main-panel">
+        <div ng-include="'navbar.html'" onload="finishLoadingNavbar()"></div>
+
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="orange">
+                                <i class="material-icons">kitchen</i>
+                            </div>
+                            <div class="card-content">
+                                <p class="category">Rooms</p>
+                                <h3 id="nRooms" class="title"></h3>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">plus_one</i>
+                                    <a href="#" onclick="addRoom()">Add room</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="green">
+                                <i class="material-icons">store</i>
+                            </div>
+                            <div class="card-content">
+                                <p class="category">Revenue</p>
+                                <h3 class="title">$34,245</h3>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">date_range</i> Last 24 Hours
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="red">
+                                <i class="material-icons">info_outline</i>
+                            </div>
+                            <div class="card-content">
+                                <p class="category">Fixed Issues</p>
+                                <h3 class="title">75</h3>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">local_offer</i> Tracked from Github
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="blue">
+                                <i class="fa fa-twitter"></i>
+                            </div>
+                            <div class="card-content">
+                                <p class="category">Followers</p>
+                                <h3 class="title">+245</h3>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">update</i> Just Updated
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header card-chart" data-background-color="green">
+                                <div class="ct-chart" id="dailySalesChart"></div>
+                            </div>
+                            <div class="card-content">
+                                <h4 class="title">Daily Sales</h4>
+                                <p class="category"><span class="text-success"><i class="fa fa-long-arrow-up"></i> 55%  </span>
+                                    increase in today sales.</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">access_time</i> updated 4 minutes ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header card-chart" data-background-color="orange">
+                                <div class="ct-chart" id="emailsSubscriptionChart"></div>
+                            </div>
+                            <div class="card-content">
+                                <h4 class="title">Email Subscriptions</h4>
+                                <p class="category">Last Campaign Performance</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header card-chart" data-background-color="red">
+                                <div class="ct-chart" id="completedTasksChart"></div>
+                            </div>
+                            <div class="card-content">
+                                <h4 class="title">Completed Tasks</h4>
+                                <p class="category">Last Campaign Performance</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rooms" class="row">
+                </div>
+            </div>
+        </div>
+
+        <div ng-include="'footer.html'"></div>
+    </div>
+</div>
+
+</body>
+
+<!--   Core JS Files   -->
+<script src="assets/js/jquery-3.1.0.min.js" type="text/javascript"></script>
+<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="assets/js/material.min.js" type="text/javascript"></script>
+
+<!--  Charts Plugin -->
+<script src="assets/js/chartist.min.js"></script>
+
+<!--  Notifications Plugin    -->
+<script src="assets/js/bootstrap-notify.js"></script>
+
+<!-- Material Dashboard javascript methods -->
+<script src="assets/js/material-dashboard.js"></script>
+
+<!-- Material Dashboard DEMO methods, don't include it in your project! -->
+<script src="assets/js/demo.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Javascript method's body can be found in assets/js/demos.js
+        demo.initDashboardPageCharts();
+        loadData();
+    });
+
+    function loadData() {
+        $.getJSON("https://efi-home-sergiowalls.c9users.io:8080/rooms", function (data) {
+            var length = data.length;
+            $('#nRooms').html(length);
+        });
+        $.getJSON("https://efi-home-sergiowalls.c9users.io:8080/rooms/all", function (data) {
+            $('#rooms').html('');
+            var time = new Date().toLocaleString();
+            $.each(data, function (k, v) {
+                var room = $('<div></div>', {
+                    html:
+                    '<div class="card card-nav-tabs">' +
+                    '<div class="card-header" data-background-color="purple">' +
+                    '<h4 class="title">Room ' + k + '</h4>' +
+                    '<p class="category">Fetch on ' + time + '</p>' +
+                    '</div>' +
+                    '<div id="room' + k + '" class="card-content"></div>' +
+                    '</div>',
+                    id: k,
+                    class: 'col-lg-4 col-md-12'
+                });
+                room.appendTo('#rooms');
+                var videoUrl = v.status.videoUrl;
+                var video = $('<img src=' + videoUrl + '>', {html: 'video' + k});
+                video.appendTo('#room' + k);
+
+                $.each(v.status, function (k2, v2) {
+                    var room = $('<div></div>', {
+                        html:
+                        '<label>' + k2 + ':</label> ' + v2
+                    });
+                    room.appendTo('#room' + k);
+                });
+            })
+        });
+    }
+
+    var app = angular.module('myApp', []);
+
+    app.controller('DashboardCtrl', function ($scope) {
+        $scope.finishLoadingSidebar = function () {
+            $('#dashboard').addClass("active");
+        };
+        $scope.finishLoadingNavbar = function () {
+            $('#navbar-title').html("Dashboard");
+        };
+    });
+
+    function addRoom() {
+        $.post("https://efi-home-sergiowalls.c9users.io:8080/rooms", {}, function (data, status) {
+            demo.showNotification('top', 'center', "Successfully created new room");
+            loadData()
+        });
+    }
+</script>
+
+</html>
