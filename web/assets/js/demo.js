@@ -88,12 +88,12 @@ demo = {
 
     },
 
-	showNotification: function(from, align){
-    	color = Math.floor((Math.random() * 4) + 1);
+	showNotification: function(from, align, message){
+        var color = Math.floor((Math.random() * 4) + 1);
 
     	$.notify({
         	icon: "notifications",
-        	message: "Welcome to <b>Material Dashboard</b> - a beautiful freebie for every web developer."
+        	message: message
 
         },{
             type: type[color],
