@@ -50,7 +50,7 @@
                             <div class="card-footer">
                                 <div class="stats">
                                     <i class="material-icons">plus_one</i>
-                                    <a href="#" onclick="addRoom()">Add one more room</a>
+                                    <a href="#" onclick="addRoom()">Add room</a>
                                 </div>
                             </div>
                         </div>
@@ -218,7 +218,10 @@
                     class: 'col-lg-4 col-md-12'
                 });
                 room.appendTo('#rooms');
-                console.log(v);
+                var videoUrl = "http://f00b526f.ngrok.io/video.mjpg";
+                var video = $('<img src=' + videoUrl + '>', {html: 'video' + k});
+                video.appendTo('#room' + k);
+
                 $.each(v, function (k2, v2) {
                     var room = $('<div></div>', {
                         html:
@@ -243,8 +246,8 @@
 
     function addRoom() {
         $.post("https://efi-home-sergiowalls.c9users.io:8080/rooms", {}, function (data, status) {
-           demo.showNotification('top', 'center', "Successfully created new room");
-           loadData()
+            demo.showNotification('top', 'center', "Successfully created new room");
+            loadData()
         });
     }
 </script>
