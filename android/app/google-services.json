@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "508529580617",
+    "firebase_url": "https://hackathons-186411.firebaseio.com",
+    "project_id": "hackathons-186411",
+    "storage_bucket": "hackathons-186411.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508529580617:android:5b4b7d6e25ed7cfd",
+        "android_client_info": {
+          "package_name": "dev.b5team.hack2progress.a2017.savelight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508529580617-0t7ablepbgfne9tmoevidd08mkn22cuu.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "508529580617-6lvp6i4ge1g64a5olaur5fbmeo4a7utv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI5lz0-hPcxRB95026oJ1MSsP79f7zqRU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
