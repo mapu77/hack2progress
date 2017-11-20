@@ -1,12 +1,18 @@
 import os
 import cv2
+import datetime
 import numpy as np
 from time import sleep
+from funct_thread import FunctionThread
 
 # function to detect face using OpenCV
 import requests
 from PIL import Image
 from resizeimage import resizeimage
+
+marc_url = 'http://8ba96d50.ngrok.io/video.mjpg'  # 1
+juan_url = 'http://6cba3f94.ngrok.io/video.mjpg'  # 2
+sergio_url = 'http://23474fb4.ngrok.io/video.mjpg'  # 3
 
 
 def detect_face(img):
@@ -114,7 +120,8 @@ def prepare_training_data(data_folder_path):
     return faces, labels
 
 
-subjects = ["", "Edu", "Juanjo"]
+# subjects = ["", "Marc", "Juan", "Sergio", "Edu", "Juanjo"]
+subjects = ["", "Marc", "", "", "Edu", ""]
 
 
 def resize_images(dir, width, height):
@@ -148,9 +155,9 @@ faces, labels = prepare_training_data("training-data")
 
 print("Data prepared")
 # print total faces and labels
-print("Total faces: ", len(faces))
+# print("Total faces: ", len(faces))
 
-print("Total labels: ", len(labels))
+# print("Total labels: ", len(labels))
 
 face_recognizer = cv2.createLBPHFaceRecognizer()
 face_recognizer.train(faces, np.array(labels))
@@ -180,7 +187,7 @@ def predict(test_img):
     face, rect = detect_face(img)
     # predict the image using our face recognizer
     label, accuracy = face_recognizer.predict(face)
-    print label, accuracy
+    # print label, accuracy
     # get name of respective label returned by face recognizer
     label_text = subjects[label]
 
@@ -212,52 +219,147 @@ print("Predicting images...")
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()
 
-cap = cv2.VideoCapture(0)
-cap.set(3, 640)  # WIDTH
-cap.set(4, 480)  # HEIGHT
+cap1 = cv2.VideoCapture(sergio_url)
+cap2 = cv2.VideoCapture(marc_url)
+# cap = cv2.VideoCapture(sergio_url)
+cap1.set(5, 10)
+cap1.set(3, 640)  # WIDTH
+cap1.set(4, 480)  # HEIGHT
+cap2.set(5, 10)
+cap2.set(3, 640)  # WIDTH
+cap2.set(4, 480)  # HEIGHT
+
+# captures = [cv2.VideoCapture(sergio_url)]
+# for capture in captures:
+#     capture.set(3, 640)  # WIDTH
+#     capture.set(4, 480)  # HEIGHT
 
 face_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
+
+
 # eye_cascade = cv2.CascadeClassifier('/haarcascades/haarcascade_eye.xml')
 
-while (True):
-    # Capture frame-by-frame
-    ret, frame = cap.read()
-    # cv2.imshow('frame', frame)
+def stateChanges(previous_labels_in_picture, labels_in_picture, light, light_old):
+    if len(previous_labels_in_picture) != len(labels_in_picture):
+        return True
+    else:
+        for idx, label in enumerate(previous_labels_in_picture):
+            if label != labels_in_picture[idx]:
+                return True
+    if light != light_old:
+        return True
+    return False
 
-    faces = detect_faces(frame)
-    img = frame.copy()
 
-    print(len(faces))
-    labels_in_picture = []
-    # Display the resulting frame
-    for (face_img, (x, y, w, h)) in faces:
-        label, accuracy = face_recognizer.predict(face_img)
-        print label, accuracy
-        # get name of respective label returned by face recognizer
-        label_text = subjects[label]
-        labels_in_picture.append(label_text)
+previous_labels_in_picture1 = []
+previous_labels_in_picture2 = []
 
-        # draw a rectangle around face detected
-        draw_rectangle(img, (x, y, w, h))
-        # draw name of predicted person
-        draw_text(img, label_text, x, y - 5)
 
-        # cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
-        # cv2.imshow("frame", predicted_img1)
+# previous_labels_in_pictures = []
+# for cap in captures:
+#     previous_labels_in_pictures.append([])
 
-        # roi_gray = gray[y:y+h, x:x+w]
-        # roi_color = frame[y:y+h, x:x+w]
-        # eyes = eye_cascade.detectMultiScale(roi_gray)
-        # for (ex,ey,ew,eh) in eyes:
-        #     cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+def send_request(labels_in_pic, light, room):
+    lvalue = 'OFF'
+    if light:
+        lvalue = 'ON'
+    labels = ""
+    for idx, label in enumerate(labels_in_pic):
+        if idx != 0:
+            labels += ", "
+        labels += label
+    requests.post('https://efi-home-sergiowalls.c9users.io:8080/rooms/' + str(room) + '/events',
+                  data={"count": len(labels_in_pic), "names": labels, "light": lvalue})
 
-    cv2.imshow("Frame", img)
-    r = requests.post('https://efi-home-sergiowalls.c9users.io:8080/rooms/1/events',
-                      data={"count": len(faces), "names": labels_in_picture})
-    sleep(0.25)
+
+count_frames1 = 0
+count_frames2 = 0
+light1 = False
+light2 = False
+light1_old = False
+light2_old = False
+
+while True:
+    ret1, frame1 = cap1.read()
+    img1 = frame1.copy()
+    if count_frames1 == 10:
+        count_frames1 = 0
+        faces1 = detect_faces(frame1)
+
+        # print len(faces1)
+        labels_in_picture1 = []
+
+        for (face_img1, (x, y, w, h)) in faces1:
+            label1, accuracy1 = face_recognizer.predict(face_img1)
+            label_text1 = subjects[label1]
+            labels_in_picture1.append(label_text1)
+
+            draw_rectangle(img1, (x, y, w, h))
+            draw_text(img1, label_text1, x, y - 5)
+
+        if stateChanges(previous_labels_in_picture1, labels_in_picture1, light1, light1_old):
+            # previous_labels_in_pictures[idx] = labels_in_picture
+            light1_old = light1
+            previous_labels_in_picture1 = labels_in_picture1
+            FunctionThread(send_request, labels_in_picture1, light1, 1).start()
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
+
+        cv2.imshow("Frame 1", img1)
+    else:
+        count_frames1 += 1
+    # cv2.imshow("Frame " + str(idx), img)
+
+    ret2, frame2 = cap2.read()
+    img2 = frame2.copy()
+    if count_frames2 == 10:
+        count_frames2 = 0
+        faces2 = detect_faces(frame2)
+
+        # print len(faces2)
+        labels_in_picture2 = []
+
+        for (face_img2, (x, y, w, h)) in faces2:
+            label2, accuracy2 = face_recognizer.predict(face_img2)
+            label_text2 = subjects[label2]
+            labels_in_picture2.append(label_text2)
+
+            draw_rectangle(img2, (x, y, w, h))
+            draw_text(img2, label_text2, x, y - 5)
+
+        if stateChanges(previous_labels_in_picture2, labels_in_picture2, light2, light2_old):
+            # previous_labels_in_pictures[idx] = labels_in_picture
+            light2_old = light2
+            previous_labels_in_picture2 = labels_in_picture2
+            FunctionThread(send_request, labels_in_picture2, light2, 2).start()
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
+
+        cv2.imshow("Frame 2", img2)
+    else:
+        count_frames2 += 1
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+    elif cv2.waitKey(1) & 0xFF == ord('n'):
+        light1 = True
+        print "light1 ON"
+        # requests.post('https://efi-home-sergiowalls.c9users.io:8080/rooms/1/events', data={"count": 0, "light": 'ON'})
+    elif cv2.waitKey(1) & 0xFF == ord('m'):
+        light1 = False
+        print "light1 OFF"
+    elif cv2.waitKey(1) & 0xFF == ord('j'):
+        light2 = True
+        print "light2 ON"
+        # requests.post('https://efi-home-sergiowalls.c9users.io:8080/rooms/2/events', data={"count": 0, "light": 'ON'})
+    elif cv2.waitKey(1) & 0xFF == ord('k'):
+        light2 = False
+        print "light1 OFF"
 
 # When everything done, release the capture
-cap.release()
+# for cap in captures:
+#     cap.release()
+cap1.release()
+cap2.release()
+
 cv2.destroyAllWindows()
